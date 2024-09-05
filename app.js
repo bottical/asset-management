@@ -78,3 +78,32 @@ window.addEventListener('load', () => {
     console.log("ページ読み込み完了");  // デバッグ用のログ
     updateRecentDeliveries();
 });
+
+// 入荷情報を更新する関数
+function registerArrival(placonBarcode) {
+    console.log("入荷登録処理を開始");  // デバッグ用ログ
+    db.collection("placon").doc(placonBarcode).update({
+        status: "倉庫在庫",
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    })
+    .then(() => {
+        console.log("入荷情報が更新されました");
+    })
+    .catch((error) => {
+        console.error("エラー: ", error);
+    });
+}
+
+// 入荷フォームのサブミット処理
+const arrivalForm = document.getElementById('arrivalForm');
+if (arrivalForm) {
+    arrivalForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const placonBarcode = document.getElementById('arrivalPlaconBarcode').value;
+        console.log(`入荷するプラコンバーコード: ${placonBarcode}`);  // デバッグ用ログ
+        registerArrival(placonBarcode);
+        e.target.reset();
+    });
+} else {
+    console.error("arrivalFormが見つかりません");
+}
