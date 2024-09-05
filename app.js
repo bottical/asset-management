@@ -1,3 +1,16 @@
+// Firebaseの設定
+const firebaseConfig = {
+  apiKey: "AIzaSyBxRe1pRI8DaCe-ECkhnqYrroL0YBjo7qI",
+  authDomain: "asset-management-53fd3.firebaseapp.com",
+  projectId: "asset-management-53fd3",
+  storageBucket: "asset-management-53fd3.appspot.com",
+  messagingSenderId: "125785721214",
+  appId: "1:125785721214:web:613f2e922c6dd66984cb2f"
+};
+
+// Firebase初期化
+firebase.initializeApp(firebaseConfig);
+
 // Firestoreデータベースの参照
 const db = firebase.firestore();
 
