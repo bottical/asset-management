@@ -211,11 +211,18 @@ if (searchPlacon && searchDestination) {
             } else {
                 querySnapshot.forEach(doc => {
                     const data = doc.data();
-                    // placonBarcode は doc.id で取得し、前方一致チェックを行う
-                    if (doc.id.startsWith(searchPlacon)) {  // プラコン番号の前方一致チェック
+                    console.log("取得したデータ:", data);  // デバッグ用ログ
+
+                    // プラコン番号の前方一致チェック
+                    if (doc.id.startsWith(searchPlacon)) {  
+                        // タイムスタンプが存在する場合の処理
+                        const timestamp = data.timestamp ? data.timestamp.toDate().toLocaleString() : "N/A";
+                        const status = data.status || "N/A";
+                        const updatedBy = data.updatedBy || "N/A";
+
+                        // 検索結果を表示
                         const li = document.createElement('li');
-                        // status, timestamp, updatedBy を取得し、結果に表示
-                        li.textContent = `プラコン: ${doc.id}, 送り状番号: ${data.destinationBarcode}, ステータス: ${data.status}, 更新日時: ${data.timestamp.toDate().toLocaleString()}, 更新者: ${data.updatedBy}`;
+                        li.textContent = `プラコン: ${doc.id}, 送り状番号: ${data.destinationBarcode}, ステータス: ${status}, 更新日時: ${timestamp}, 更新者: ${updatedBy}`;
                         searchResults.appendChild(li);
                     }
                 });
