@@ -84,10 +84,11 @@ function registerArrival(placonBarcode) {
     console.log("入荷登録処理を開始");  // デバッグ用ログ
     db.collection("placon").doc(placonBarcode).update({
         status: "倉庫在庫",
+        destinationBarcode: "000000000000",  // destinationBarcodeを更新
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
     })
     .then(() => {
-        console.log("入荷情報が更新されました");
+        console.log("入荷情報が更新され、destinationBarcodeが000000000000に設定されました");
     })
     .catch((error) => {
         console.error("エラー: ", error);
