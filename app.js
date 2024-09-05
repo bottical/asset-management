@@ -132,8 +132,14 @@ if (assetForm) {
         const placonBarcode = document.getElementById('placonBarcode').value;
         const destinationBarcode = document.getElementById('destinationBarcode').value;
         console.log(`バーコード: ${placonBarcode}, 配送先: ${destinationBarcode}`);  // デバッグ用のログ
+        
         registerShipment(placonBarcode, destinationBarcode);
+        
+        // フォームをリセット
         e.target.reset();
+
+        // プラコンのバーコード入力フィールドにフォーカスを移動
+        document.getElementById('placonBarcode').focus();
     });
 }
 
