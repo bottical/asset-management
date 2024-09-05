@@ -5,18 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>プラコン管理アプリ</title>
     <link rel="stylesheet" href="styles.css">
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
-<script src="app.js" defer></script>
-
-
-    <script defer src="app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
+    <script src="app.js" defer></script>
 </head>
 <body>
     <div class="container">
-        <h1>プラコン管理アプリ</h1>
+        <h1>プラコン管理アプリ - 出荷登録</h1>
 
         <!-- 出荷登録フォーム -->
         <form id="assetForm">
@@ -35,20 +32,12 @@
             </div>
         </form>
 
-        <!-- 入荷登録フォーム -->
-        <form id="arrivalForm">
-            <div>
-                <label for="arrivalPlaconBarcode">入荷するプラコンのバーコード:</label>
-                <input type="text" id="arrivalPlaconBarcode" required>
-            </div>
-            
-            <div class="input-group">
-                <button type="submit">入荷登録</button>
-            </div>
-        </form>
-
+        <!-- 最近の配送記録（直近10件）-->
         <h2>最近の配送記録（直近10件）</h2>
         <ul id="recentDeliveries"></ul>
+
+        <!-- 入荷登録ページへのリンク -->
+        <p><a href="arrival.html">入荷登録ページへ移動</a></p>
     </div>
 </body>
 </html>
