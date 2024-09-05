@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>プラコン管理アプリ</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+    <script defer src="app.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>プラコン管理アプリ</h1>
+
+        <!-- 出荷登録フォーム -->
+        <form id="assetForm">
+            <div>
+                <label for="placonBarcode">プラコンのバーコード:</label>
+                <input type="text" id="placonBarcode" required>
+            </div>
+            
+            <div>
+                <label for="destinationBarcode">配送先のバーコード:</label>
+                <input type="text" id="destinationBarcode" required>
+            </div>
+            
+            <div class="input-group">
+                <button type="submit">出荷登録</button>
+            </div>
+        </form>
+
+        <!-- 入荷登録フォーム -->
+        <form id="arrivalForm">
+            <div>
+                <label for="arrivalPlaconBarcode">入荷するプラコンのバーコード:</label>
+                <input type="text" id="arrivalPlaconBarcode" required>
+            </div>
+            
+            <div class="input-group">
+                <button type="submit">入荷登録</button>
+            </div>
+        </form>
+
+        <h2>最近の配送記録（直近10件）</h2>
+        <ul id="recentDeliveries"></ul>
+    </div>
+</body>
+</html>
