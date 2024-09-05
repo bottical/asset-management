@@ -197,16 +197,18 @@ if (searchForm) {
         const searchResults = document.getElementById('searchResults');
         searchResults.innerHTML = '';
 
-// プラコン番号（ドキュメントID）で検索（前方一致）
-if (searchPlacon) {
+// プラコン番号と送り状番号でAND検索
+if (searchPlacon && searchDestination) {
     db.collection("placon").orderBy(firebase.firestore.FieldPath.documentId())
         .startAt(searchPlacon)
         .endAt(searchPlacon + '\uf8ff')
+        .where('destinationBarcode', '>=', searchDestination)
+        .where('destinationBarcode', '<=', searchDestination + '\uf8ff')
         .get()
         .then(querySnapshot => {
             if (querySnapshot.empty) {
                 const li = document.createElement('li');
-                li.textContent = "該当するプラコン番号が見つかりません。";
+                li.textContent = "該当するデータが見つかりません。";
                 searchResults.appendChild(li);
             } else {
                 querySnapshot.forEach(doc => {
@@ -218,28 +220,8 @@ if (searchPlacon) {
             }
         })
         .catch(error => {
-            console.error("プラコン番号検索エラー:", error);
+            console.error("検索エラー:", error);
         });
 }
-        // 送り状番号で検索（前方一致）
-        if (searchDestination) {
-            db.collection("placon").where('destinationBarcode', '>=', searchDestination)
-                .where('destinationBarcode', '<=', searchDestination + '\uf8ff')
-                .get()
-                .then(querySnapshot => {
-                    querySnapshot.forEach(doc => {
-                        const data = doc.data();
-                        const li = document.createElement('li');
-                        li.textContent = `プラコン: ${doc.id}, 送り状番号: ${data.destinationBarcode}`;
-                        searchResults.appendChild(li);
-                    });
-                })
-                .catch(error => {
-                    console.error("検索エラー:", error);
-                });
-        }
-    });
-}
-
 
 
