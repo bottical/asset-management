@@ -67,24 +67,28 @@ auth.onAuthStateChanged((user) => {
 
 // 出荷情報を登録する関数
 function registerShipment(placonBarcode, destinationBarcode) {
-    console.log("出荷登録処理を開始");  // デバッグ用のログ
-    db.collection("placon").doc(placonBarcode).set({
-        destinationBarcode: destinationBarcode,
-        status: "出荷",
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    })
-    .then(() => {
-        console.log("出荷情報が登録されました");
-
-        // ローカルストレージに保存
-        saveToLocalStorage(placonBarcode, destinationBarcode);
-
-        // 最近の配送記録を更新
-        updateRecentDeliveries();
-    })
-    .catch((error) => {
-        console.error("エラー: ", error);
-    });
+    const user = auth.currentUser;  // 現在のログインユーザーを取得
+    if (user) {
+        console.log("出荷登録処理を開始");  // デバッグ用のログ
+        db.collection("placon").doc(placonBarcode).set({
+            destinationBarcode: destinationBarcode,
+            status: "出荷",
+            updatedBy: user.email,  // ログイン中のユーザーのメールアドレスを記録
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        })
+        .then(() => {
+            console.log("出荷情報が登録されました");
+            // ローカルストレージに保存
+            saveToLocalStorage(placonBarcode, destinationBarcode);
+            // 最近の配送記録を更新
+            updateRecentDeliveries();
+        })
+        .catch((error) => {
+            console.error("エラー: ", error);
+        });
+    } else {
+        console.error("ユーザーがログインしていません");
+    }
 }
 
 // ローカルストレージに保存する関数
@@ -132,18 +136,24 @@ window.addEventListener('load', () => {
 
 // 入荷情報を更新する関数
 function registerArrival(placonBarcode) {
-    console.log("入荷登録処理を開始");  // デバッグ用ログ
-    db.collection("placon").doc(placonBarcode).update({
-        status: "倉庫在庫",
-        destinationBarcode: "000000000000",  // destinationBarcodeを更新
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    })
-    .then(() => {
-        console.log("入荷情報が更新され、destinationBarcodeが000000000000に設定されました");
-    })
-    .catch((error) => {
-        console.error("エラー: ", error);
-    });
+    const user = auth.currentUser;  // 現在のログインユーザーを取得
+    if (user) {
+        console.log("入荷登録処理を開始");  // デバッグ用ログ
+        db.collection("placon").doc(placonBarcode).update({
+            status: "倉庫在庫",
+            destinationBarcode: "000000000000",  // destinationBarcodeを更新
+            updatedBy: user.email,  // ログイン中のユーザーのメールアドレスを記録
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        })
+        .then(() => {
+            console.log("入荷情報が更新され、destinationBarcodeが000000000000に設定されました");
+        })
+        .catch((error) => {
+            console.error("エラー: ", error);
+        });
+    } else {
+        console.error("ユーザーがログインしていません");
+    }
 }
 
 // 入荷フォームのサブミット処理
