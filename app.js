@@ -103,7 +103,7 @@ function registerShipment(placonBarcode, destinationBarcode) {
 // ローカルストレージに保存する関数
 function saveToLocalStorage(placonBarcode, destinationBarcode) {
     let deliveries = JSON.parse(localStorage.getItem('deliveries')) || [];
-    deliveries.unshift(`プラコンNo.${placonBarcode} - 配送先: ${destinationBarcode}`);
+    deliveries.unshift(`プラコンNo.${placonBarcode} - 送り状番号: ${destinationBarcode}`);
     if (deliveries.length > 10) {
         deliveries.pop();
     }
