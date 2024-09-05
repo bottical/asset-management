@@ -10,6 +10,8 @@ const firebaseConfig = {
 
 // Firebase初期化
 firebase.initializeApp(firebaseConfig);
+
+// Firestoreデータベースの参照
 const db = firebase.firestore();
 
 
