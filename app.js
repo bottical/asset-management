@@ -197,10 +197,11 @@ if (searchForm) {
         const searchResults = document.getElementById('searchResults');
         searchResults.innerHTML = '';
 
-// プラコン番号で検索（前方一致）
+// プラコン番号（ドキュメントID）で検索（前方一致）
 if (searchPlacon) {
-    db.collection("placon").where('destinationBarcode', '>=', searchPlacon)
-        .where('destinationBarcode', '<=', searchPlacon + '\uf8ff')
+    db.collection("placon").orderBy(firebase.firestore.FieldPath.documentId())
+        .startAt(searchPlacon)
+        .endAt(searchPlacon + '\uf8ff')
         .get()
         .then(querySnapshot => {
             if (querySnapshot.empty) {
@@ -220,7 +221,6 @@ if (searchPlacon) {
             console.error("プラコン番号検索エラー:", error);
         });
 }
-
         // 送り状番号で検索（前方一致）
         if (searchDestination) {
             db.collection("placon").where('destinationBarcode', '>=', searchDestination)
