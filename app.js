@@ -38,6 +38,29 @@ if (loginForm) {
     });
 }
 
+// ログイン中のユーザーを表示する関数
+function displayUserInfo() {
+    const user = auth.currentUser;
+    const userInfoElement = document.getElementById('user-info');
+    if (user && userInfoElement) {
+        userInfoElement.textContent = `${user.email} でログイン中`;
+    }
+}
+
+// ログイン状態の確認
+auth.onAuthStateChanged((user) => {
+    if (user) {
+        console.log("現在ログイン中のユーザー:", user.email);
+        displayUserInfo();  // ログイン中のユーザーを表示
+    } else {
+        console.log("ログインしているユーザーはいません");
+        // ログインしていない場合、ログインページへリダイレクト
+        if (!window.location.pathname.includes('login.html')) {
+            window.location.href = 'login.html';
+        }
+    }
+});
+
 // ユーザーログアウト
 function logout() {
     auth.signOut()
@@ -49,20 +72,6 @@ function logout() {
             console.error("ログアウトエラー:", error.message);
         });
 }
-
-auth.onAuthStateChanged((user) => {
-    if (user) {
-        console.log("現在ログイン中のユーザー:", user.email);
-        // ユーザーがログインしていれば、特定の操作を許可
-    } else {
-        console.log("ログインしているユーザーはいません");
-        // ログインしていない場合、現在のページがログインページでない場合のみリダイレクト
-        if (!window.location.pathname.includes('login.html')) {
-            window.location.href = 'login.html';
-        }
-    }
-});
-
 
 
 // 出荷情報を登録する関数
