@@ -197,32 +197,33 @@ if (searchForm) {
         const searchResults = document.getElementById('searchResults');
         searchResults.innerHTML = '';
 
-        // 両方の入力がある場合、AND検索
-        if (searchPlacon && searchDestination) {
-            db.collection("placon").orderBy(firebase.firestore.FieldPath.documentId())
-                .startAt(searchPlacon)
-                .endAt(searchPlacon + '\uf8ff')
-                .where('destinationBarcode', '>=', searchDestination)
-                .where('destinationBarcode', '<=', searchDestination + '\uf8ff')
-                .get()
-                .then(querySnapshot => {
-                    if (querySnapshot.empty) {
+// プラコン番号と送り状番号でAND検索
+if (searchPlacon && searchDestination) {
+    db.collection("placon").orderBy('destinationBarcode')  // まずは destinationBarcode で並び替え
+        .where('destinationBarcode', '>=', searchDestination)
+        .where('destinationBarcode', '<=', searchDestination + '\uf8ff')
+        .get()
+        .then(querySnapshot => {
+            if (querySnapshot.empty) {
+                const li = document.createElement('li');
+                li.textContent = "該当するデータが見つかりません。";
+                searchResults.appendChild(li);
+            } else {
+                querySnapshot.forEach(doc => {
+                    const data = doc.data();
+                    // placonBarcode は doc.id で取得し、前方一致チェックを行う
+                    if (doc.id.startsWith(searchPlacon)) {  // プラコン番号の前方一致チェック
                         const li = document.createElement('li');
-                        li.textContent = "該当するデータが見つかりません。";
+                        li.textContent = `プラコン: ${doc.id}, 送り状番号: ${data.destinationBarcode}`;
                         searchResults.appendChild(li);
-                    } else {
-                        querySnapshot.forEach(doc => {
-                            const data = doc.data();
-                            const li = document.createElement('li');
-                            li.textContent = `プラコン: ${doc.id}, 送り状番号: ${data.destinationBarcode}`;
-                            searchResults.appendChild(li);
-                        });
                     }
-                })
-                .catch(error => {
-                    console.error("検索エラー:", error);
                 });
-        }
+            }
+        })
+        .catch(error => {
+            console.error("検索エラー:", error);
+        });
+}
         // プラコン番号単体での検索
         else if (searchPlacon) {
             db.collection("placon").orderBy(firebase.firestore.FieldPath.documentId())
