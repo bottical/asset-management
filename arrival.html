@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>プラコン管理アプリ - 入荷登録</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
+    <script src="app.js" defer></script>
+</head>
+<body>
+    <div class="container">
+        <h1>プラコン管理アプリ - 入荷登録</h1>
+
+        <!-- 入荷登録フォーム -->
+        <form id="arrivalForm">
+            <div>
+                <label for="arrivalPlaconBarcode">入荷するプラコンのバーコード:</label>
+                <input type="text" id="arrivalPlaconBarcode" required>
+            </div>
+            
+            <div class="input-group">
+                <button type="submit">入荷登録</button>
+            </div>
+        </form>
+
+        <!-- 出荷登録ページへのリンク -->
+        <p><a href="index.html">出荷登録ページへ移動</a></p>
+    </div>
+</body>
+</html>
