@@ -214,7 +214,8 @@ if (searchPlacon && searchDestination) {
                     // placonBarcode は doc.id で取得し、前方一致チェックを行う
                     if (doc.id.startsWith(searchPlacon)) {  // プラコン番号の前方一致チェック
                         const li = document.createElement('li');
-                        li.textContent = `プラコン: ${doc.id}, 送り状番号: ${data.destinationBarcode}`;
+                        // status, timestamp, updatedBy を取得し、結果に表示
+                        li.textContent = `プラコン: ${doc.id}, 送り状番号: ${data.destinationBarcode}, ステータス: ${data.status}, 更新日時: ${data.timestamp.toDate().toLocaleString()}, 更新者: ${data.updatedBy}`;
                         searchResults.appendChild(li);
                     }
                 });
@@ -224,6 +225,7 @@ if (searchPlacon && searchDestination) {
             console.error("検索エラー:", error);
         });
 }
+
         // プラコン番号単体での検索
         else if (searchPlacon) {
             db.collection("placon").orderBy(firebase.firestore.FieldPath.documentId())
