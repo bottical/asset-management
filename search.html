@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登録情報検索</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="app.js" defer></script>
+</head>
+<body>
+    <div class="container">
+        <h1>登録情報検索</h1>
+
+        <!-- ユーザーのログイン情報を表示する部分 -->
+        <p id="user-info"></p>
+
+        <!-- 検索フォーム -->
+        <form id="searchForm">
+            <div>
+                <label for="searchPlacon">プラコンの番号（前方一致）:</label>
+                <input type="text" id="searchPlacon" placeholder="プラコンの番号">
+            </div>
+
+            <div>
+                <label for="searchDestination">送り状番号（前方一致）:</label>
+                <input type="text" id="searchDestination" placeholder="送り状番号">
+            </div>
+
+            <div class="input-group">
+                <button type="submit">検索</button>
+            </div>
+        </form>
+
+        <!-- 検索結果表示 -->
+        <h3>検索結果</h3>
+        <ul id="searchResults"></ul>
+
+        <!-- ログアウトボタン -->
+        <p><button onclick="logout()">ログアウト</button></p>
+    </div>
+</body>
+</html>
