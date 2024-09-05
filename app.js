@@ -197,31 +197,34 @@ if (searchForm) {
         const searchResults = document.getElementById('searchResults');
         searchResults.innerHTML = '';
 
-// プラコン番号と送り状番号でAND検索
-if (searchPlacon && searchDestination) {
-    db.collection("placon").orderBy(firebase.firestore.FieldPath.documentId())
-        .startAt(searchPlacon)
-        .endAt(searchPlacon + '\uf8ff')
-        .where('destinationBarcode', '>=', searchDestination)
-        .where('destinationBarcode', '<=', searchDestination + '\uf8ff')
-        .get()
-        .then(querySnapshot => {
-            if (querySnapshot.empty) {
-                const li = document.createElement('li');
-                li.textContent = "該当するデータが見つかりません。";
-                searchResults.appendChild(li);
-            } else {
-                querySnapshot.forEach(doc => {
-                    const data = doc.data();
-                    const li = document.createElement('li');
-                    li.textContent = `プラコン: ${doc.id}, 送り状番号: ${data.destinationBarcode}`;
-                    searchResults.appendChild(li);
+        // プラコン番号と送り状番号でAND検索
+        if (searchPlacon && searchDestination) {
+            db.collection("placon").orderBy(firebase.firestore.FieldPath.documentId())
+                .startAt(searchPlacon)
+                .endAt(searchPlacon + '\uf8ff')
+                .where('destinationBarcode', '>=', searchDestination)
+                .where('destinationBarcode', '<=', searchDestination + '\uf8ff')
+                .get()
+                .then(querySnapshot => {
+                    if (querySnapshot.empty) {
+                        const li = document.createElement('li');
+                        li.textContent = "該当するデータが見つかりません。";
+                        searchResults.appendChild(li);
+                    } else {
+                        querySnapshot.forEach(doc => {
+                            const data = doc.data();
+                            const li = document.createElement('li');
+                            li.textContent = `プラコン: ${doc.id}, 送り状番号: ${data.destinationBarcode}`;
+                            searchResults.appendChild(li);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error("検索エラー:", error);
                 });
-            }
-        })
-        .catch(error => {
-            console.error("検索エラー:", error);
-        });
+        } else {
+            // プラコン番号または送り状番号が入力されていない場合の処理
+            console.log("プラコン番号または送り状番号を入力してください。");
+        }
+    });
 }
-
-
