@@ -14,6 +14,58 @@ firebase.initializeApp(firebaseConfig);
 // Firestoreデータベースの参照
 const db = firebase.firestore();
 
+// Firebaseの認証サービス
+const auth = firebase.auth();
+
+// ログイン処理
+const loginForm = document.getElementById('loginForm');
+if (loginForm) {
+    loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        
+        auth.signInWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+                console.log("ログイン成功:", userCredential.user);
+                // ログイン成功後の処理 (例: ホームページにリダイレクト)
+                window.location.href = 'index.html';
+            })
+            .catch((error) => {
+                console.error("ログインエラー:", error.message);
+                alert("ログインに失敗しました: " + error.message);
+            });
+    });
+}
+
+// ユーザーログアウト
+function logout() {
+    auth.signOut()
+        .then(() => {
+            console.log("ログアウトしました");
+            window.location.href = 'login.html';  // ログアウト後にログインページへリダイレクト
+        })
+        .catch((error) => {
+            console.error("ログアウトエラー:", error.message);
+        });
+}
+
+// ログイン状態の確認
+auth.onAuthStateChanged((user) => {
+    if (user) {
+        console.log("現在ログイン中のユーザー:", user.email);
+        // ユーザーがログインしていれば、特定の操作を許可
+    } else {
+        console.log("ログインしているユーザーはいません");
+        // ログインしていない場合、ログインページへリダイレクト
+        if (window.location.pathname !== '/login.html') {
+            window.location.href = 'login.html';
+        }
+    }
+});
+
+
+
 // 出荷情報を登録する関数
 function registerShipment(placonBarcode, destinationBarcode) {
     console.log("出荷登録処理を開始");  // デバッグ用のログ
