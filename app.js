@@ -1,5 +1,9 @@
+// Firestoreデータベースの参照
+const db = firebase.firestore();
+
 // 出荷情報を登録する関数
 function registerShipment(placonBarcode, destinationBarcode) {
+    console.log("出荷登録処理を開始");  // デバッグ用のログ
     db.collection("placon").doc(placonBarcode).set({
         destinationBarcode: destinationBarcode,
         status: "出荷",
@@ -21,27 +25,21 @@ function registerShipment(placonBarcode, destinationBarcode) {
 
 // ローカルストレージに保存する関数
 function saveToLocalStorage(placonBarcode, destinationBarcode) {
-    // 現在の履歴を取得
     let deliveries = JSON.parse(localStorage.getItem('deliveries')) || [];
-
-    // 新しい出荷情報を追加
     deliveries.unshift(`プラコンNo.${placonBarcode} - 配送先: ${destinationBarcode}`);
-
-    // 履歴を最大10件に制限
     if (deliveries.length > 10) {
         deliveries.pop();
     }
-
-    // ローカルストレージに保存
     localStorage.setItem('deliveries', JSON.stringify(deliveries));
 }
 
-// ローカルストレージから履歴を取得し、画面に表示する関数
+// 最近の配送記録を表示する関数
 function updateRecentDeliveries() {
     const deliveries = JSON.parse(localStorage.getItem('deliveries')) || [];
     const recentDeliveries = document.getElementById('recentDeliveries');
-    recentDeliveries.innerHTML = '';
+    if (!recentDeliveries) return;  // recentDeliveriesがない場合は何もしない
 
+    recentDeliveries.innerHTML = '';
     deliveries.forEach(delivery => {
         const li = document.createElement('li');
         li.textContent = delivery;
@@ -49,7 +47,21 @@ function updateRecentDeliveries() {
     });
 }
 
+// 出荷フォームのサブミット処理
+const assetForm = document.getElementById('assetForm');
+if (assetForm) {
+    assetForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const placonBarcode = document.getElementById('placonBarcode').value;
+        const destinationBarcode = document.getElementById('destinationBarcode').value;
+        console.log(`バーコード: ${placonBarcode}, 配送先: ${destinationBarcode}`);  // デバッグ用のログ
+        registerShipment(placonBarcode, destinationBarcode);
+        e.target.reset();
+    });
+}
+
 // ページ読み込み時に最近の配送記録を表示
 window.addEventListener('load', () => {
+    console.log("ページ読み込み完了");  // デバッグ用のログ
     updateRecentDeliveries();
 });
