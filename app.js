@@ -197,23 +197,29 @@ if (searchForm) {
         const searchResults = document.getElementById('searchResults');
         searchResults.innerHTML = '';
 
-        // プラコン番号で検索（前方一致）
-        if (searchPlacon) {
-            db.collection("placon").where('placonBarcode', '>=', searchPlacon)
-                .where('placonBarcode', '<=', searchPlacon + '\uf8ff')
-                .get()
-                .then(querySnapshot => {
-                    querySnapshot.forEach(doc => {
-                        const data = doc.data();
-                        const li = document.createElement('li');
-                        li.textContent = `プラコン: ${doc.id}, 送り状番号: ${data.destinationBarcode}`;
-                        searchResults.appendChild(li);
-                    });
-                })
-                .catch(error => {
-                    console.error("検索エラー:", error);
+// プラコン番号で検索（前方一致）
+if (searchPlacon) {
+    db.collection("placon").where('destinationBarcode', '>=', searchPlacon)
+        .where('destinationBarcode', '<=', searchPlacon + '\uf8ff')
+        .get()
+        .then(querySnapshot => {
+            if (querySnapshot.empty) {
+                const li = document.createElement('li');
+                li.textContent = "該当するプラコン番号が見つかりません。";
+                searchResults.appendChild(li);
+            } else {
+                querySnapshot.forEach(doc => {
+                    const data = doc.data();
+                    const li = document.createElement('li');
+                    li.textContent = `プラコン: ${doc.id}, 送り状番号: ${data.destinationBarcode}`;
+                    searchResults.appendChild(li);
                 });
-        }
+            }
+        })
+        .catch(error => {
+            console.error("プラコン番号検索エラー:", error);
+        });
+}
 
         // 送り状番号で検索（前方一致）
         if (searchDestination) {
