@@ -50,15 +50,14 @@ function logout() {
         });
 }
 
-// ログイン状態の確認
 auth.onAuthStateChanged((user) => {
     if (user) {
         console.log("現在ログイン中のユーザー:", user.email);
         // ユーザーがログインしていれば、特定の操作を許可
     } else {
         console.log("ログインしているユーザーはいません");
-        // ログインしていない場合、ログインページへリダイレクト
-        if (window.location.pathname !== '/login.html') {
+        // ログインしていない場合、現在のページがログインページでない場合のみリダイレクト
+        if (!window.location.pathname.includes('login.html')) {
             window.location.href = 'login.html';
         }
     }
