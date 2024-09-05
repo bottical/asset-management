@@ -197,41 +197,41 @@ if (searchForm) {
         const searchResults = document.getElementById('searchResults');
         searchResults.innerHTML = '';
 
-// プラコン番号と送り状番号でAND検索
-if (searchPlacon && searchDestination) {
-    db.collection("placon").orderBy('destinationBarcode')  // まずは destinationBarcode で並び替え
-        .where('destinationBarcode', '>=', searchDestination)
-        .where('destinationBarcode', '<=', searchDestination + '\uf8ff')
-        .get()
-        .then(querySnapshot => {
-            if (querySnapshot.empty) {
-                const li = document.createElement('li');
-                li.textContent = "該当するデータが見つかりません。";
-                searchResults.appendChild(li);
-            } else {
-                querySnapshot.forEach(doc => {
-                    const data = doc.data();
-                    console.log("取得したデータ:", data);  // デバッグ用ログ
-
-                    // プラコン番号の前方一致チェック
-                    if (doc.id.startsWith(searchPlacon)) {  
-                        // タイムスタンプが存在する場合の処理
-                        const timestamp = data.timestamp ? data.timestamp.toDate().toLocaleString() : "N/A";
-                        const status = data.status || "N/A";
-                        const updatedBy = data.updatedBy || "N/A";
-
-                        // 検索結果を表示
+        // プラコン番号と送り状番号でAND検索
+        if (searchPlacon && searchDestination) {
+            db.collection("placon").orderBy('destinationBarcode')  // まずは destinationBarcode で並び替え
+                .where('destinationBarcode', '>=', searchDestination)
+                .where('destinationBarcode', '<=', searchDestination + '\uf8ff')
+                .get()
+                .then(querySnapshot => {
+                    if (querySnapshot.empty) {
                         const li = document.createElement('li');
-                        li.textContent = `プラコン: ${doc.id}, 送り状番号: ${data.destinationBarcode}, ステータス: ${status}, 更新日時: ${timestamp}, 更新者: ${updatedBy}`;
+                        li.textContent = "該当するデータが見つかりません。";
                         searchResults.appendChild(li);
+                    } else {
+                        querySnapshot.forEach(doc => {
+                            const data = doc.data();
+                            console.log("取得したデータ:", data);  // デバッグ用ログ
+
+                            // プラコン番号の前方一致チェック
+                            if (doc.id.startsWith(searchPlacon)) {  
+                                // タイムスタンプが存在する場合の処理
+                                const timestamp = data.timestamp ? data.timestamp.toDate().toLocaleString() : "N/A";
+                                const status = data.status || "N/A";
+                                const updatedBy = data.updatedBy || "N/A";
+
+                                // 検索結果を表示
+                                const li = document.createElement('li');
+                                li.textContent = `プラコン: ${doc.id}, 送り状番号: ${data.destinationBarcode}, ステータス: ${status}, 更新日時: ${timestamp}, 更新者: ${updatedBy}`;
+                                searchResults.appendChild(li);
+                            }
+                        });
                     }
+                })
+                .catch(error => {
+                    console.error("検索エラー:", error);
                 });
-            }
-        })
-        .catch(error => {
-            console.error("検索エラー:", error);
-        });
-}
+        }
 
         // プラコン番号単体での検索
         else if (searchPlacon) {
@@ -247,8 +247,13 @@ if (searchPlacon && searchDestination) {
                     } else {
                         querySnapshot.forEach(doc => {
                             const data = doc.data();
+                            // タイムスタンプが存在する場合の処理
+                            const timestamp = data.timestamp ? data.timestamp.toDate().toLocaleString() : "N/A";
+                            const status = data.status || "N/A";
+                            const updatedBy = data.updatedBy || "N/A";
+
                             const li = document.createElement('li');
-                            li.textContent = `プラコン: ${doc.id}, 送り状番号: ${data.destinationBarcode}`;
+                            li.textContent = `プラコン: ${doc.id}, 送り状番号: ${data.destinationBarcode}, ステータス: ${status}, 更新日時: ${timestamp}, 更新者: ${updatedBy}`;
                             searchResults.appendChild(li);
                         });
                     }
@@ -257,6 +262,7 @@ if (searchPlacon && searchDestination) {
                     console.error("プラコン番号検索エラー:", error);
                 });
         }
+
         // 送り状番号単体での検索
         else if (searchDestination) {
             db.collection("placon").where('destinationBarcode', '>=', searchDestination)
@@ -270,8 +276,13 @@ if (searchPlacon && searchDestination) {
                     } else {
                         querySnapshot.forEach(doc => {
                             const data = doc.data();
+                            // タイムスタンプが存在する場合の処理
+                            const timestamp = data.timestamp ? data.timestamp.toDate().toLocaleString() : "N/A";
+                            const status = data.status || "N/A";
+                            const updatedBy = data.updatedBy || "N/A";
+
                             const li = document.createElement('li');
-                            li.textContent = `プラコン: ${doc.id}, 送り状番号: ${data.destinationBarcode}`;
+                            li.textContent = `プラコン: ${doc.id}, 送り状番号: ${data.destinationBarcode}, ステータス: ${status}, 更新日時: ${timestamp}, 更新者: ${updatedBy}`;
                             searchResults.appendChild(li);
                         });
                     }
@@ -280,6 +291,7 @@ if (searchPlacon && searchDestination) {
                     console.error("送り状番号検索エラー:", error);
                 });
         }
+
         // 入力がない場合のエラーメッセージ
         else {
             const li = document.createElement('li');
