@@ -88,3 +88,7 @@ li {
 .input-group button {
     white-space: nowrap;
 }
+
+p{
+    text-align:center;
+}
