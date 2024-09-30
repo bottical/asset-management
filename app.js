@@ -300,3 +300,47 @@ if (searchForm) {
         }
     });
 }
+
+// データをエクスポートする関数
+function exportData() {
+    const user = auth.currentUser;
+    if (!user) {
+        alert("ログインしていません");
+        return;
+    }
+
+    // Firestoreからデータを取得
+    db.collection("placon").get().then((querySnapshot) => {
+        const placonData = [];
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            const timestamp = data.timestamp ? data.timestamp.toDate().toLocaleString() : "N/A";
+            placonData.push({
+                placonBarcode: doc.id,
+                destinationBarcode: data.destinationBarcode || "N/A",
+                status: data.status || "N/A",
+                updatedBy: data.updatedBy || "N/A",
+                timestamp: timestamp
+            });
+        });
+
+        // CSV形式に変換
+        let csvContent = "プラコンバーコード,送り状番号,ステータス,更新日時,登録者\n";
+        placonData.forEach(row => {
+            csvContent += `${row.placonBarcode},${row.destinationBarcode},${row.status},${row.timestamp},${row.updatedBy}\n`;
+        });
+
+        // CSVファイルをダウンロード
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", "placon_data.csv");
+        link.style.visibility = "hidden";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }).catch((error) => {
+        console.error("データのエクスポートエラー:", error);
+    });
+}
