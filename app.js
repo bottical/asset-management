@@ -301,7 +301,7 @@ if (searchForm) {
     });
 }
 
-// データをエクスポートする関数
+// データをエクスポートする関数 (SJISに変換)
 function exportData() {
     const user = auth.currentUser;
     if (!user) {
@@ -315,27 +315,32 @@ function exportData() {
         querySnapshot.forEach((doc) => {
             const data = doc.data();
             const timestamp = data.timestamp ? data.timestamp.toDate().toLocaleString() : "N/A";
-            placonData.push({
-                placonBarcode: doc.id,
-                destinationBarcode: data.destinationBarcode || "N/A",
-                status: data.status || "N/A",
-                updatedBy: data.updatedBy || "N/A",
-                timestamp: timestamp
-            });
+            placonData.push([
+                doc.id,  // プラコンバーコード
+                data.destinationBarcode || "N/A",  // 送り状番号
+                data.status || "N/A",  // ステータス
+                timestamp,  // 更新日時
+                data.updatedBy || "N/A"  // 登録者
+            ]);
         });
 
         // CSV形式に変換
         let csvContent = "プラコンバーコード,送り状番号,ステータス,更新日時,登録者\n";
         placonData.forEach(row => {
-            csvContent += `${row.placonBarcode},${row.destinationBarcode},${row.status},${row.timestamp},${row.updatedBy}\n`;
+            csvContent += row.join(",") + "\n";
         });
 
-        // CSVファイルをダウンロード
-        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        // SJISに変換
+        const sjisArray = Encoding.convert(Encoding.stringToCode(csvContent), {
+            to: 'SJIS',
+            from: 'UNICODE'
+        });
+
+        const sjisBlob = new Blob([new Uint8Array(sjisArray)], { type: "text/csv" });
         const link = document.createElement("a");
-        const url = URL.createObjectURL(blob);
+        const url = URL.createObjectURL(sjisBlob);
         link.setAttribute("href", url);
-        link.setAttribute("download", "placon_data.csv");
+        link.setAttribute("download", "placon_data_sjis.csv");
         link.style.visibility = "hidden";
         document.body.appendChild(link);
         link.click();
@@ -344,3 +349,4 @@ function exportData() {
         console.error("データのエクスポートエラー:", error);
     });
 }
+
